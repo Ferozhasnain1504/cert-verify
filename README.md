@@ -74,3 +74,24 @@ Open the URL shown in the terminal (usually ```http://localhost:5000```) in your
 1. Enter a certificate ID.
 2. Click Verify by ID.
 3. ✅ Genuine Certificate if the ID exists, ❌ Forged Certificate if it doesn’t.
+
+---
+
+## API Endpoints
+
+| Method | Endpoint        | Description                                                                |
+| ------ | --------------- | -------------------------------------------------------------------------- |
+| GET    | `/api/health`   | Server health check                                                        |
+| POST   | `/api/upload`   | Upload a certificate (fields: `name`, `issuer`, `date`, `certificateFile`) |
+| POST   | `/api/verify`   | Verify a certificate by file (`certificateFile`) or JSON `{ id }`          |
+| GET    | `/api/cert/:id` | Get certificate metadata by ID                                             |
+
+---
+### Notes
+
+** The prototype mocks blockchain functionality for quick demo.
+** To implement real blockchain storage:
+** Use Ethereum / Polygon / Truffle / Web3.js.
+** Store certificate hash on-chain.
+** Verify by querying the blockchain.
+
