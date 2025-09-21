@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Cert Demo</title></head>
+<body>
+  <h2>Upload Certificate</h2>
+  <form id="uploadForm" action="http://localhost:5000/api/upload" method="post" enctype="multipart/form-data" target="_blank">
+    Name: <input name="name"><br>
+    Issuer: <input name="issuer"><br>
+    Date: <input name="date"><br>
+    File: <input name="certificateFile" type="file"><br>
+    <button type="submit">Upload</button>
+  </form>
+</body>
+</html>

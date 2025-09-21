@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Certificate Verification Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h2 { margin-top: 30px; }
+    input, button { margin: 5px 0; padding: 5px; }
+    #result { margin-top: 20px; font-weight: bold; font-size: 18px; }
+    .genuine { color: green; }
+    .forged { color: red; }
+  </style>
+</head>
+<body>
+  <h1>Certificate Verification Demo</h1>
+
+  <!-- Upload & Verify by File -->
+  <h2>Verify by Uploading Certificate File</h2>
+  <input type="file" id="fileInput">
+  <button onclick="verifyFile()">Verify Certificate</button>
+
+  <!-- Verify by ID -->
+  <h2>Verify by Certificate ID</h2>
+  <input type="text" id="idInput" placeholder="Enter certificate ID">
+  <button onclick="verifyID()">Verify ID</button>
+
+  <div id="result"></div>
+
+<script>
+const API_URL = 'http://localhost:5000/api'; // change if deployed
+
+async function verifyFile() {
+  const fileInput = document.getElementById('fileInput');
+  if (!fileInput.files[0]) {
+    alert('Please select a certificate file');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('certificateFile', fileInput.files[0]);
+
+  try {
+    const res = await fetch(`${API_URL}/verify`, { method: 'POST', body: formData });
+    const data = await res.json();
+    showResult(data);
+  } catch (err) {
+    console.error(err);
+    alert('Error verifying certificate');
+  }
+}
+
+async function verifyID() {
+  const id = document.getElementById('idInput').value.trim();
+  if (!id) {
+    alert('Please enter certificate ID');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/verify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id })
+    });
+    const data = await res.json();
+    showResult(data);
+  } catch (err) {
+    console.error(err);
+    alert('Error verifying certificate');
+  }
+}
+
+function showResult(data) {
+  const resultDiv = document.getElementById('result');
+  if (data.verified) {
+    resultDiv.innerHTML = 'Genuine Certificate ✅<br>' +
+      `<pre>${JSON.stringify(data.certificate, null, 2)}</pre>`;
+    resultDiv.className = 'genuine';
+  } else {
+    resultDiv.innerHTML = 'Forged Certificate ❌<br>' +
+      (data.message ? data.message : '');
+    resultDiv.className = 'forged';
+  }
+}
+</script>
+</body>
+</html>
