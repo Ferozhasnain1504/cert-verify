@@ -44,7 +44,7 @@ npm install
 PORT=5000
 MONGODB_URI=your_mongodb_connection_string_here
 ```
-#### Example MongoDB URI (replace <username>, <password>, <dbname>):
+#### Example MongoDB URI (replace ```<username>```, ```<password>```, ```<dbname>```):
 ```php-template
 mongodb+srv://<username>:<password>@cluster0.abcdx.mongodb.net/<dbname>?retryWrites=true&w=majority
 ```
