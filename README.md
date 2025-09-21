@@ -1,0 +1,60 @@
+# Certificate Verification Prototype
+
+This is a **hackathon-ready prototype** for a **Blockchain-based Certificate Authentication System**.  
+It allows users to **upload certificates or verify by ID** and instantly check whether a certificate is **genuine or forged**.
+
+> ⚠️ Note: This prototype uses **MongoDB** to store certificate hashes for rapid demo purposes.  
+> The blockchain layer is not implemented yet, but the flow simulates end-to-end verification.
+
+---
+
+## Features
+
+- Upload a certificate (PDF) and store its SHA-256 hash in the database.
+- Verify a certificate by uploading the same file.
+- Verify a certificate by entering its unique ID.
+- Clear **Genuine / Forged** indication with metadata.
+
+---
+
+## Tech Stack
+
+- **Backend:** Node.js + Express
+- **Database:** MongoDB (Atlas free tier recommended)
+- **File Handling:** Multer
+- **Hashing:** Crypto (SHA-256)
+- **Frontend Demo:** Simple HTML + fetch API
+- **CORS:** Enabled for cross-origin requests
+
+---
+
+## Getting Started
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/Ferozhasnain1504/cert-verify
+cd backend
+```
+### 2. Install dependencies
+```bash
+npm install
+```
+### 3. Create a .env file
+```ini
+PORT=5000
+MONGODB_URI=your_mongodb_connection_string_here
+```
+#### Example MongoDB URI (replace <username>, <password>, <dbname>):
+```php-template
+mongodb+srv://<username>:<password>@cluster0.abcdx.mongodb.net/<dbname>?retryWrites=true&w=majority
+```
+### 4. Start the backend server
+```bash
+npm run dev
+```
+### 5. Open the demo frontend
+Serve ```verify-demo.html``` using a static server
+```bash
+npx serve .
+```
+Open the URL shown in the terminal (usually ```http://localhost:5000```) in your browser.
