@@ -58,3 +58,19 @@ Serve ```verify-demo.html``` using a static server
 npx serve .
 ```
 Open the URL shown in the terminal (usually ```http://localhost:5000```) in your browser.
+
+----
+
+### How to Use
+
+## Verify by File
+
+1. Select a certificate PDF.
+2. Click Verify Certificate.
+3. ✅ Genuine Certificate if stored, ❌ Forged Certificate if not.
+
+## Verify by ID
+
+1. Enter a certificate ID.
+2. Click Verify by ID.
+3. ✅ Genuine Certificate if the ID exists, ❌ Forged Certificate if it doesn’t.
