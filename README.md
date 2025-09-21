@@ -1,6 +1,6 @@
 # Certificate Verification Prototype
 
-This is a **hackathon-ready prototype** for a **Blockchain-based Certificate Authentication System**.  
+This is a **hackathon prototype** for a **Blockchain-based Certificate Authentication System**.  
 It allows users to **upload certificates or verify by ID** and instantly check whether a certificate is **genuine or forged**.
 
 > ⚠️ Note: This prototype uses **MongoDB** to store certificate hashes for rapid demo purposes.  
