@@ -89,9 +89,14 @@ Open the URL shown in the terminal (usually ```http://localhost:5000```) in your
 ---
 ### Notes
 
-** The prototype mocks blockchain functionality for quick demo.
-** To implement real blockchain storage:
-** Use Ethereum / Polygon / Truffle / Web3.js.
-** Store certificate hash on-chain.
-** Verify by querying the blockchain.
+ -The prototype mocks blockchain functionality for quick demo.
+ - To implement real blockchain storage:
+ - Use Ethereum / Polygon / Truffle / Web3.js.
+ - Store certificate hash on-chain.
+ - Verify by querying the blockchain.
 
+---
+
+### License
+
+This project is for educational/demo purposes and hackathon use.
