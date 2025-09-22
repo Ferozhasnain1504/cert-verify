@@ -1,88 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Certificate Verification Demo</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    h2 { margin-top: 30px; }
-    input, button { margin: 5px 0; padding: 5px; }
-    #result { margin-top: 20px; font-weight: bold; font-size: 18px; }
-    .genuine { color: green; }
-    .forged { color: red; }
-  </style>
-</head>
-<body>
-  <h1>Certificate Verification Demo</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Certificate Verification Demo</title>
+    <link rel="stylesheet" href="./verify-demo.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>🔐 Certificate Verification</h1>
 
-  <!-- Upload & Verify by File -->
-  <h2>Verify by Uploading Certificate File</h2>
-  <input type="file" id="fileInput">
-  <button onclick="verifyFile()">Verify Certificate</button>
+      <!-- Verify by File -->
+      <h2>Verify by Uploading Certificate</h2>
+      <input type="file" id="fileInput" accept=".pdf" />
+      <button onclick="verifyFile()">Verify Certificate</button>
 
-  <!-- Verify by ID -->
-  <h2>Verify by Certificate ID</h2>
-  <input type="text" id="idInput" placeholder="Enter certificate ID">
-  <button onclick="verifyID()">Verify ID</button>
+      <h2>Verify by Certificate ID</h2>
+      <input type="text" id="idInput" placeholder="Enter certificate ID" />
+      <button onclick="verifyID()">Verify by ID</button>
 
-  <div id="result"></div>
+      <div class="small-muted">
+        Tip: Upload the same file you used when registering to get "Genuine".
+      </div>
+    </div>
 
-<script>
-const API_URL = 'http://localhost:5000/api'; // change if deployed
+    <!-- Popup -->
+    <div class="popup-overlay" id="popupOverlay" aria-hidden="true">
+      <div
+        class="popup"
+        id="popupBox"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="popupTitle"
+      >
+        <button class="close-x" id="popupCloseX" aria-label="Close popup">
+          &times;
+        </button>
+        <h2 id="popupTitle"></h2>
+        <div id="popupMessage"></div>
+        <div class="actions" id="popupActions"></div>
+      </div>
+    </div>
 
-async function verifyFile() {
-  const fileInput = document.getElementById('fileInput');
-  if (!fileInput.files[0]) {
-    alert('Please select a certificate file');
-    return;
-  }
+    <script>
+      const API_URL = "http://localhost:5000/api"; // change if deployed
 
-  const formData = new FormData();
-  formData.append('certificateFile', fileInput.files[0]);
+      // DOM refs
+      const overlay = document.getElementById("popupOverlay");
+      const box = document.getElementById("popupBox");
+      const title = document.getElementById("popupTitle");
+      const msg = document.getElementById("popupMessage");
+      const actions = document.getElementById("popupActions");
+      const closeX = document.getElementById("popupCloseX");
 
-  try {
-    const res = await fetch(`${API_URL}/verify`, { method: 'POST', body: formData });
-    const data = await res.json();
-    showResult(data);
-  } catch (err) {
-    console.error(err);
-    alert('Error verifying certificate');
-  }
-}
+      closeX.addEventListener("click", closePopup);
 
-async function verifyID() {
-  const id = document.getElementById('idInput').value.trim();
-  if (!id) {
-    alert('Please enter certificate ID');
-    return;
-  }
+      // close when clicking outside the popup box
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) closePopup();
+      });
 
-  try {
-    const res = await fetch(`${API_URL}/verify`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id })
-    });
-    const data = await res.json();
-    showResult(data);
-  } catch (err) {
-    console.error(err);
-    alert('Error verifying certificate');
-  }
-}
+      // close on Escape
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closePopup();
+      });
 
-function showResult(data) {
-  const resultDiv = document.getElementById('result');
-  if (data.verified) {
-    resultDiv.innerHTML = 'Genuine Certificate ✅<br>' +
-      `<pre>${JSON.stringify(data.certificate, null, 2)}</pre>`;
-    resultDiv.className = 'genuine';
-  } else {
-    resultDiv.innerHTML = 'Forged Certificate ❌<br>' +
-      (data.message ? data.message : '');
-    resultDiv.className = 'forged';
-  }
-}
-</script>
-</body>
+      async function verifyFile() {
+        const fileInput = document.getElementById("fileInput");
+        if (!fileInput.files[0]) {
+          alert("Please select a certificate file");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("certificateFile", fileInput.files[0]);
+
+        try {
+          const res = await fetch(`${API_URL}/verify`, {
+            method: "POST",
+            body: formData,
+          });
+          const data = await res.json();
+          showPopup(data);
+        } catch (err) {
+          console.error(err);
+          alert("Error verifying certificate");
+        }
+      }
+
+      async function verifyID() {
+        const id = document.getElementById("idInput").value.trim();
+        if (!id) {
+          alert("Please enter certificate ID");
+          return;
+        }
+
+        try {
+          const res = await fetch(`${API_URL}/cert/${id}`);
+
+          // Try to parse JSON; if parsing fails treat as not found
+          let data = null;
+          try {
+            data = await res.json();
+          } catch (e) {
+            showPopup({
+              verified: false,
+              message: "Invalid response from server",
+            });
+            return;
+          }
+
+          // If HTTP not OK (e.g., 404) or server returned an error object, treat as forged
+          if (
+            !res.ok ||
+            data === null ||
+            data.error ||
+            (!data._id && !data.id)
+          ) {
+            const msg =
+              data && data.error ? data.error : "Certificate ID not found";
+            showPopup({ verified: false, message: msg });
+            return;
+          }
+
+          // Otherwise we have a valid certificate object
+          showPopup({ verified: true, certificate: data });
+        } catch (err) {
+          console.error("verifyID error:", err);
+          showPopup({
+            verified: false,
+            message: "Network error while verifying ID",
+          });
+        }
+      }
+
+      function showPopup(data) {
+        // prepare popup contents
+        actions.innerHTML = "";
+        msg.innerHTML = "";
+
+        if (data.verified) {
+          box.className = "popup genuine";
+          title.textContent = "✅ Genuine Certificate";
+
+          const cert = data.certificate;
+          const meta = {
+            id: cert._id || cert.id,
+            name: cert.name,
+            issuer: cert.issuer,
+            date_of_issue: cert.date_of_issue,
+            filename: cert.originalFilename || cert.filename,
+            hash: cert.hash,
+          };
+          msg.innerHTML = `<pre>${JSON.stringify(meta, null, 2)}</pre>`;
+
+          // Download button (GET /api/cert/:id/file)
+          const downloadBtn = document.createElement("button");
+          downloadBtn.className = "btn-download";
+          downloadBtn.textContent = "Download Certificate";
+          downloadBtn.onclick = () => {
+            const downloadUrl = `${API_URL}/cert/${meta.id}/file`;
+            window.open(downloadUrl, "_blank");
+          };
+          actions.appendChild(downloadBtn);
+
+          // View metadata in new tab
+          const viewBtn = document.createElement("button");
+          viewBtn.className = "btn-light";
+          viewBtn.textContent = "View Metadata";
+          viewBtn.onclick = () => {
+            const popup = window.open("");
+            popup.document.write(
+              "<pre>" + JSON.stringify(cert, null, 2) + "</pre>"
+            );
+          };
+          actions.appendChild(viewBtn);
+
+          // Close
+          const closeBtn = document.createElement("button");
+          closeBtn.className = "btn-close";
+          closeBtn.textContent = "Close";
+          closeBtn.onclick = closePopup;
+          actions.appendChild(closeBtn);
+        } else {
+          box.className = "popup forged";
+          title.textContent = "❌ Forged Certificate";
+          msg.innerHTML = `<div>${
+            data.message ? data.message : "No record found."
+          }</div>`;
+
+          const suggestBtn = document.createElement("button");
+          suggestBtn.className = "btn-light";
+          suggestBtn.textContent = "Suggest Re-check";
+          suggestBtn.onclick = () =>
+            alert(
+              "Make sure the file is the exact one that was registered. Even small edits change the hash."
+            );
+          actions.appendChild(suggestBtn);
+
+          const closeBtn = document.createElement("button");
+          closeBtn.className = "btn-close";
+          closeBtn.textContent = "Close";
+          closeBtn.onclick = closePopup;
+          actions.appendChild(closeBtn);
+        }
+
+        // show overlay
+        overlay.classList.add("show");
+        overlay.setAttribute("aria-hidden", "false");
+        // focus the close button for accessibility
+        closeX.focus();
+      }
+
+      function closePopup() {
+        overlay.classList.remove("show");
+        overlay.setAttribute("aria-hidden", "true");
+      }
+    </script>
+  </body>
 </html>

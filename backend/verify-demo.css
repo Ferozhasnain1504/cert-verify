@@ -1,0 +1,209 @@
+ body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #333;
+      }
+
+      /* Container */
+      .container {
+        background: #fff;
+        padding: 30px 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        width: 100%;
+        max-width: 520px;
+        text-align: center;
+        animation: fadeIn 0.6s ease-in-out;
+      }
+
+      h1 {
+        margin-bottom: 18px;
+        color: #4a4a4a;
+      }
+      h2 {
+        font-size: 16px;
+        margin-top: 20px;
+        color: #555;
+      }
+
+      input[type="file"],
+      input[type="text"] {
+        margin-top: 10px;
+        padding: 10px;
+        width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        transition: border 0.3s;
+        box-sizing: border-box;
+      }
+
+      input:focus {
+        border: 1px solid #667eea;
+      }
+
+      button {
+        margin-top: 12px;
+        padding: 12px 20px;
+        width: 100%;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        color: #fff;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.15s;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Popup Styles - hidden by default */
+      .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      /* when .show is present, overlay becomes visible */
+      .popup-overlay.show {
+        display: flex;
+      }
+
+      .popup {
+        background: #fff;
+        border-radius: 12px;
+        padding: 20px 22px;
+        text-align: center;
+        width: 90%;
+        max-width: 480px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        animation: popIn 0.35s ease;
+        position: relative;
+      }
+
+      .popup.genuine {
+        border: 3px solid #1b7a34;
+        color: #1b7a34;
+      }
+      .popup.forged {
+        border: 3px solid #b80000;
+        color: #b80000;
+      }
+
+      .popup h2 {
+        margin: 6px 0 10px 0;
+      }
+      .popup pre {
+        text-align: left;
+        font-size: 13px;
+        background: #f9f9f9;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 8px;
+        overflow-x: auto;
+      }
+
+      .popup .actions {
+        margin-top: 14px;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn-light {
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        background: #46a5ed;
+        font-weight: 600;
+      }
+      .btn-download {
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        background: linear-gradient(90deg, #1b7a34, #2aa06b);
+        color: #fff;
+        font-weight: 700;
+      }
+      .btn-close {
+        background: #ed4646;
+      }
+
+      /* top-right close X */
+      .close-x {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  font-weight: bold;
+  color: #444;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: auto;
+  height: auto;
+}
+
+.close-x:hover {
+  color: #000; /* darker on hover */
+}
+
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes popIn {
+        from {
+          transform: scale(0.95);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .small-muted {
+        font-size: 13px;
+        color: #666;
+        margin-top: 8px;
+      }
+      @media (max-width: 420px) {
+        .container {
+          padding: 22px;
+        }
+        .popup {
+          padding: 16px;
+        }
+      }
