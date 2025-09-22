@@ -62,6 +62,23 @@
       <div class="actions" id="modalActions"></div>
     </div>
   </div>
+
+  <!-- Modal overlay -->
+<div class="overlay" id="uploadModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 id="modalTitle">✅ Document Uploaded</h2>
+    <p id="modalMsg">Your certificate has been uploaded successfully.</p>
+
+    <div class="actions">
+      <button id="viewMetaBtn" class="btn-light">View Metadata</button>
+      <button id="closeModalBtn" class="btn-light">Close</button>
+    </div>
+
+    <div id="metaBox" class="meta" style="display:none"></div>
+  </div>
+</div>
+
+
   <script src="./upload-demo.js"></script>
 </body>
 </html>

@@ -137,6 +137,9 @@
       modalActions.appendChild(close);
     }
 
+    showModal(true, 'Certificate uploaded successfully', certificate._id);
+
+
     overlay.classList.add('show');
     overlay.setAttribute('aria-hidden', 'false');
     modalClose.focus();
