@@ -1,14 +1,67 @@
-<!doctype html>
-<html>
-<head><meta charset="utf-8"><title>Cert Demo</title></head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Certificate Upload — Demo</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="./upload-demo.css">
+</head>
 <body>
-  <h2>Upload Certificate</h2>
-  <form id="uploadForm" action="http://localhost:5000/api/upload" method="post" enctype="multipart/form-data" target="_blank">
-    Name: <input name="name"><br>
-    Issuer: <input name="issuer"><br>
-    Date: <input name="date"><br>
-    File: <input name="certificateFile" type="file"><br>
-    <button type="submit">Upload</button>
-  </form>
+
+  <main class="card" role="main">
+    <header>
+      <div class="logo">C</div>
+      <div>
+        <h1>Certificate Upload</h1>
+        <p class="lead">Upload certificate PDF to compute and store its secure SHA-256 hash (demo).</p>
+      </div>
+    </header>
+
+    <form id="uploadForm" class="form-grid" onsubmit="return onSubmit(event)">
+      <div>
+        <label for="name">Recipient name</label>
+        <input id="name" name="name" type="text" placeholder="Alice Example" required />
+      </div>
+
+      <div>
+        <label for="issuer">Issuer</label>
+        <input id="issuer" name="issuer" type="text" placeholder="University X" required />
+      </div>
+
+      <div>
+        <label for="date">Date of Issue</label>
+        <input id="date" name="date" type="date" />
+      </div>
+
+      <div>
+        <label>Certificate file (PDF)</label>
+        <div class="file-row">
+          <div class="file-name" id="fileName">No file chosen</div>
+          <label class="file-btn" for="fileInput">Choose</label>
+        </div>
+        <input id="fileInput" name="certificateFile" type="file" accept=".pdf" style="display:none" required />
+      </div>
+
+      <div class="action">
+        <button id="uploadBtn" class="btn" type="submit">
+          <span id="btnContent">Upload Certificate</span>
+        </button>
+      </div>
+
+      <div class="muted">After upload you'll get a unique <strong>Certificate ID</strong> and a <strong>hash</strong> you can use to verify authenticity.</div>
+    </form>
+  </main>
+
+  <!-- Modal -->
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="close-x" id="modalClose" aria-label="Close">&times;</button>
+      <h2 id="modalTitle">Result</h2>
+      <p id="modalMsg">...</p>
+      <div id="metaBox" class="meta" style="display:none"></div>
+      <div class="actions" id="modalActions"></div>
+    </div>
+  </div>
+  <script src="./upload-demo.js"></script>
 </body>
 </html>
